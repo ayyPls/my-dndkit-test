@@ -23,9 +23,9 @@ export const ConstructorField = () => {
 
     const rowSensors = useSensors(
         useSensor(PointerSensor, {
-            // press delay 
+            // row press delay 
             activationConstraint: {
-                delay: 1000,
+                delay: 500,
                 tolerance: 100,
             },
             onActivation: event => console.log(event.event)
@@ -51,6 +51,8 @@ export const ConstructorField = () => {
     const updateElementsOfTheRow = (rowId: number, updatedRowElements: Array<IRowItem>) => {
         setRowItems(items => items.map(i => i.id == rowId ? { ...i, rowItems: updatedRowElements } : i))
     }
+
+    console.log(rowItems[0])
 
     return <DndContext
         // перемещение только по оси y

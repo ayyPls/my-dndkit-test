@@ -21,10 +21,6 @@ export const DraggableRow: React.FC<{ item: ITestSortableItems, active?: boolean
         setRowItemElements(item.rowItems)
     }, [item.rowItems])
 
-    useEffect(() => {
-        updateElementsOfTheRow(item.id, rowItemElements)
-    }, [rowItemElements])
-
     // пропсы которые отвечают за перемещение строк
     const {
         attributes,
@@ -45,7 +41,8 @@ export const DraggableRow: React.FC<{ item: ITestSortableItems, active?: boolean
             //     delay: 1000,
             //     tolerance: 100,
             // },
-            onActivation: event => console.log(`ACTIVE ROW ELEM SENSOR ${event.event}`)
+
+            onActivation: event => console.log(`ACTIVE ROW ELEM SENSOR ${event.event}`),
         }),
         useSensor(KeyboardSensor, {
             coordinateGetter: sortableKeyboardCoordinates
@@ -69,24 +66,26 @@ export const DraggableRow: React.FC<{ item: ITestSortableItems, active?: boolean
         border: '1px solid transparent',
         background: isDragging ? 'linear-gradient(white, white) padding-box padding-box, linear-gradient(to right, rgb(25, 118, 210), rgb(193, 130, 255)) border-box border-box' : 'white'
     };
+
     // listeners и attributes это пропсы, которые отвечают за функционал drag and drop
     return <>
         <div ref={setNodeRef} {...attributes} {...listeners} style={style} >
             {item.title}
             <DndContext
                 // перемещение только по оси x
-                modifiers={[]}
+                modifiers={[restrictToHorizontalAxis, restrictToParentElement]}
                 sensors={rowElementSensors}
                 onDragStart={({ active }) => {
                     console.log('ONDRAGSTART ==>', active)
                     setActiveRowItemElement(active);
                 }}
                 onDragEnd={({ active, over }) => {
-                    console.log('ONDRAGOVER==>', active, over)
+                    console.log('ONDRAGOVER==>', active.id, over?.id)
                     if (over && active.id !== over?.id) {
                         const activeIndex = rowItemElements.findIndex(({ id }) => id === active.id);
                         const overIndex = rowItemElements.findIndex(({ id }) => id === over.id);
-                        setRowItemElements(arrayMove(rowItemElements, activeIndex, overIndex));
+                        // функция для обновления элементов строки
+                        updateElementsOfTheRow(item.id, arrayMove(rowItemElements, activeIndex, overIndex))
                     }
                     setActiveRowItemElement(null);
                 }}
@@ -94,7 +93,8 @@ export const DraggableRow: React.FC<{ item: ITestSortableItems, active?: boolean
                     setActiveRowItemElement(null);
                 }}
             >
-                <SortableContext strategy={horizontalListSortingStrategy}
+                <SortableContext
+                    strategy={horizontalListSortingStrategy}
                     items={item.rowItems}
                 >
                     {item.rowItems.map(
