@@ -6,3 +6,9 @@ export type ITestSortableItems = {
     rowItems: IRowItem[]
 }
 
+export type IRowProps = {
+    item: ITestSortableItems,
+    active?: boolean,
+    handleCreateElement(rowId: number, elementType: IRowItem['elementType']): void,
+    updateElementsOfTheRow(rowId: number, updatedRowElements: Array<IRowItem>): void
+}
