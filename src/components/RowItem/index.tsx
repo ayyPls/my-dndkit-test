@@ -30,17 +30,17 @@ export const RowItem: FC<IRowItem & { active: boolean }> = (props) => {
         background: isDragging ? 'linear-gradient(white, white) padding-box padding-box, linear-gradient(to right, rgb(25, 118, 210), rgb(193, 130, 255)) border-box border-box' : 'white'
     };
 
-    return <div ref={setNodeRef} {...attributes} {...listeners} className="RowElementContainer" style={{ ...style, border: '1px solid pink', height: '100%', width: '100%', display: 'flex' }}>
+    return <div ref={setNodeRef} {...attributes} {...listeners} className="RowElementContainer" style={{ ...style, border: '1px solid transparent', height: '100%', width: '100%', display: 'flex' }}>
 
         <div className="RowElementContent" >
             {
-                elementType == 'button' && <div style={style}><button>{props.buttonText}</button></div>
+                elementType == 'button' && <div><button>{props.buttonText}</button></div>
             }
             {
-                elementType == 'text' && <div style={style}><p>{props.textValue}</p></div>
+                elementType == 'text' && <div><p>{props.textValue}</p></div>
             }
             {
-                elementType == 'slider' && <div style={style}><p>я слайдер вжжж🤡</p></div>
+                elementType == 'slider' && <div><p>я слайдер вжжж🤡</p></div>
             }
         </div>
     </div>
