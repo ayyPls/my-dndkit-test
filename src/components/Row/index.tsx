@@ -1,14 +1,14 @@
 import type { CSSProperties } from "react";
 import { CSS } from "@dnd-kit/utilities";
 import { arrayMove, horizontalListSortingStrategy, SortableContext, sortableKeyboardCoordinates, useSortable } from "@dnd-kit/sortable";
-import { ITestSortableItems } from "./types";
+import { IRowProps } from "./types";
 import { RowItem } from "../RowItem";
 import { IRowItem } from "../RowItem/types";
 import { Active, DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { restrictToHorizontalAxis, restrictToParentElement } from "@dnd-kit/modifiers";
 import { useState, useMemo, useEffect } from 'react'
 
-export const DraggableRow: React.FC<{ item: ITestSortableItems, active?: boolean, handleCreateElement(rowId: number, elementType: IRowItem['elementType']): void, updateElementsOfTheRow(rowId: number, updatedRowElements: Array<IRowItem>): void }> = ({ item, active, handleCreateElement, updateElementsOfTheRow }) => {
+export const DraggableRow: React.FC<IRowProps> = ({ item, active, handleCreateElement, updateElementsOfTheRow }) => {
     const { id } = item
     const [rowItemElements, setRowItemElements] = useState<Array<IRowItem>>([]);
     const [activeRowElement, setActiveRowItemElement] = useState<Active | null>(null);
@@ -36,12 +36,10 @@ export const DraggableRow: React.FC<{ item: ITestSortableItems, active?: boolean
     // сенсоры для элементов строки
     const rowElementSensors = useSensors(
         useSensor(PointerSensor, {
-            // press delay 
-            // activationConstraint: {
-            //     delay: 1000,
-            //     tolerance: 100,
-            // },
-
+            activationConstraint: {
+                delay: 500,
+                tolerance: 100,
+            },
             onActivation: event => console.log(`ACTIVE ROW ELEM SENSOR ${event.event}`),
         }),
         useSensor(KeyboardSensor, {
@@ -64,7 +62,7 @@ export const DraggableRow: React.FC<{ item: ITestSortableItems, active?: boolean
         justifyContent: 'space-between',
         zIndex: 100,
         border: '1px solid transparent',
-        background: isDragging ? 'linear-gradient(white, white) padding-box padding-box, linear-gradient(to right, rgb(25, 118, 210), rgb(193, 130, 255)) border-box border-box' : 'white'
+        background: isDragging || active ? 'linear-gradient(white, white) padding-box padding-box, linear-gradient(to right, rgb(25, 118, 210), rgb(193, 130, 255)) border-box border-box' : 'white'
     };
 
     // listeners и attributes это пропсы, которые отвечают за функционал drag and drop
@@ -76,11 +74,9 @@ export const DraggableRow: React.FC<{ item: ITestSortableItems, active?: boolean
                 modifiers={[restrictToHorizontalAxis, restrictToParentElement]}
                 sensors={rowElementSensors}
                 onDragStart={({ active }) => {
-                    console.log('ONDRAGSTART ==>', active)
                     setActiveRowItemElement(active);
                 }}
                 onDragEnd={({ active, over }) => {
-                    console.log('ONDRAGOVER==>', active.id, over?.id)
                     if (over && active.id !== over?.id) {
                         const activeIndex = rowItemElements.findIndex(({ id }) => id === active.id);
                         const overIndex = rowItemElements.findIndex(({ id }) => id === over.id);

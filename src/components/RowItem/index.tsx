@@ -1,10 +1,10 @@
-import { IRowItem } from "./types"
+import { IRowItemProps } from "./types"
 import { FC } from 'react'
 import type { CSSProperties } from "react";
 import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
 
-export const RowItem: FC<IRowItem & { active: boolean }> = (props) => {
+export const RowItem: FC<IRowItemProps> = (props) => {
     const { elementType, id, active } = props
     // пропсы которые отвечают за перемещение элементов в строке
     const {
@@ -27,7 +27,7 @@ export const RowItem: FC<IRowItem & { active: boolean }> = (props) => {
         border: '1px solid transparent',
         height: 'fit-content',
         width: 'fit-content',
-        background: isDragging ? 'linear-gradient(white, white) padding-box padding-box, linear-gradient(to right, rgb(25, 118, 210), rgb(193, 130, 255)) border-box border-box' : 'white'
+        background: isDragging || active ? 'linear-gradient(white, white) padding-box padding-box, linear-gradient(to right, rgb(25, 118, 210), rgb(193, 130, 255)) border-box border-box' : 'white'
     };
 
     return <div ref={setNodeRef} {...attributes} {...listeners} className="RowElementContainer" style={{ ...style, border: '1px solid transparent', height: '100%', width: '100%', display: 'flex' }}>
